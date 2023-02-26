@@ -3,7 +3,6 @@ import { RouterView } from "vue-router";
 import NavBar from "@/shared/components/NavBar.vue";
 import { characterRoute } from "../router/index";
 import type { RouterLink } from "../../router/link-routes";
-import { stringifyExpression } from "@vue/compiler-core";
 
 const routeLink: RouterLink[] = characterRoute
   .children!.filter((route) => (route.props as { visible: boolean }).visible)
@@ -19,7 +18,9 @@ const routeLink: RouterLink[] = characterRoute
     <!-- Navbar -->
     <NavBar :show-icon="false" :links="routeLink" />
     <!-- Ro uterView + Suspense -->
-    <RouterView />
+    <!-- <Suspense> -->
+      <RouterView />
+    <!-- </Suspense> -->
   </div>
 </template>
 <style scoped></style>
