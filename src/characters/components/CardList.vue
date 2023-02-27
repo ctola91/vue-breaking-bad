@@ -6,11 +6,11 @@ import { useCharacters } from "@/characters/composables/useCharacters";
 // const characters = ref<Character[]>(data);
 // Sin Suspense
 
-const { isLoading, characters } = useCharacters();
+const { isLoading, characters, hasError, errorMessage } = useCharacters();
 </script>
 <template>
   <h1 v-if="isLoading">Loading</h1>
-  <h1>ERROR!!!</h1>
+  <h1 v-if="hasError || errorMessage">ERROR!!!</h1>
   <ul>
     <li v-for="{ char_id, name } of characters" :key="char_id">
       {{ name }}
