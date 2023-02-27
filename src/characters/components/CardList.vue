@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { useCharacters } from "@/characters/composables/useCharacters";
 import breakingBadApi from "@/api/breakingBadApi";
 import type { Character } from "../interfaces/character";
+import CharacterCard from "@/characters/components/CharacterCard.vue";
 
 //! 1- Normal Suspense
 // Con Suspense
@@ -35,12 +36,19 @@ const {
 </script>
 <template>
   <h1 v-if="isLoading">Loading</h1>
-  <h1 v-if="isError">{{ error }}</h1>
-  <ul>
-    <li v-for="{ char_id, name } of characters" :key="char_id">
-      {{ name }}
-    </li>
-  </ul>
+  <div class="card-list">
+    <CharacterCard
+      v-for="character of characters"
+      :key="character.char_id"
+      :character="character"
+    />
+  </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.card-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+</style>
