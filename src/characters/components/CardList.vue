@@ -14,8 +14,12 @@ import type { Character } from "../interfaces/character";
 // const { isLoading, characters, hasError, errorMessage } = useCharacters();
 
 const getCharactersSlow = async (): Promise<Character[]> => {
-  const { data } = await breakingBadApi.get<Character[]>("/characters");
-  return data;
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const { data } = await breakingBadApi.get<Character[]>("/characters");
+      resolve(data);
+    }, 3000);
+  });
 };
 
 //! 3- TanStack Query
@@ -24,7 +28,10 @@ const {
   isError,
   data: characters,
   error,
-} = useQuery(["characters"], getCharactersSlow, { cacheTime: 1000 * 60 });
+} = useQuery(["characters"], getCharactersSlow, {
+  cacheTime: 1000 * 60,
+  refetchOnReconnect: "always",
+});
 </script>
 <template>
   <h1 v-if="isLoading">Loading</h1>
