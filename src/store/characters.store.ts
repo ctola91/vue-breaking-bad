@@ -1,5 +1,6 @@
 import type { Character } from "@/characters/interfaces/character";
 import { reactive } from "vue";
+import breakingBadApi from "@/api/breakingBadApi";
 
 interface Store {
   characters: {
@@ -25,22 +26,38 @@ const characterStore = reactive<Store>({
   },
 
   // Methods
-  startLoadingCharacters() {
-    // console.log("Start Loading Characters");
+  async startLoadingCharacters() {
+    const { data } = await breakingBadApi.get<Character[]>("/characters");
+    this.loadedCharacters(data);
   },
-  loadedCharacters(data: Character[]) {
-    // this.characters.count = data.length;
+  loadedCharacters(data: Character[] | string) {
+    if (typeof data === "string") {
+      return this.loadCharactersFailed(
+        "La respuesta no es un arreglo de personajes."
+      );
+    }
+    const characters = data.filter(
+      (character) => ![14, 17, 39].includes(character.char_id)
+    );
     this.characters = {
-      count: data.length,
+      count: characters.length,
       errorMessage: null,
       hasError: false,
       isLoading: false,
-      list: data,
+      list: characters,
     };
   },
-  loadCharactersFailed(error: string) {},
+  loadCharactersFailed(error: string) {
+    this.characters = {
+      count: 0,
+      errorMessage: error,
+      hasError: true,
+      isLoading: false,
+      list: []
+    }
+  },
 });
 
-characterStore.startLoadingCharacters();
+// characterStore.startLoadingCharacters();
 
 export default characterStore;
