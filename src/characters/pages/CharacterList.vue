@@ -3,22 +3,23 @@ import CardList from "@/characters/components/CardList.vue";
 import { useQuery } from "@tanstack/vue-query";
 import breakingBadApi from "@/api/breakingBadApi";
 import type { Character } from "../interfaces/character";
+import characterStore from "../../store/characters.store";
 
 const props = defineProps<{ title: string; visible: boolean }>();
 
-const getCharacters = async (): Promise<Character[]> => {
-  const { data } = await breakingBadApi.get<Character[]>("/characters");
-  return data.filter((character) => ![14, 17, 39].includes(character.char_id));
-};
+// const getCharacters = async (): Promise<Character[]> => {
+//   const { data } = await breakingBadApi.get<Character[]>("/characters");
+//   return data.filter((character) => ![14, 17, 39].includes(character.char_id));
+// };
 
-const { isLoading, data: characters } = useQuery(["characters"], getCharacters);
+// const { isLoading, data: characters } = useQuery(["characters"], getCharacters);
 </script>
 <template>
   <div>
-    <h1 v-if="isLoading">Loading...</h1>
+    <h1 v-if="characterStore.characters.isLoading">Loading...</h1>
     <template v-else>
       <h2>{{ props.title }}</h2>
-      <CardList :characters="characters || []" />
+      <CardList :characters="characterStore.characters.list" />
     </template>
   </div>
 </template>

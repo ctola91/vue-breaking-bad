@@ -59,7 +59,7 @@ const props = defineProps<Props>();
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .card-list {
   display: flex;
   flex-direction: row;
