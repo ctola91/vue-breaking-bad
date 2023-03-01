@@ -3,7 +3,7 @@ import CharacterCard from "@/characters/components/CharacterCard.vue";
 import type { Character } from "../interfaces/character";
 
 interface Props {
-  characters: Character[],
+  characters: Character[];
 }
 
 const props = defineProps<Props>();
