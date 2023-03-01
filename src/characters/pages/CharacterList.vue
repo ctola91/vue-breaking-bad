@@ -7,12 +7,20 @@ import characterStore from "../../store/characters.store";
 
 const props = defineProps<{ title: string; visible: boolean }>();
 
-// const getCharacters = async (): Promise<Character[]> => {
-//   const { data } = await breakingBadApi.get<Character[]>("/characters");
-//   return data.filter((character) => ![14, 17, 39].includes(character.char_id));
-// };
+const getCharacters = async (): Promise<Character[]> => {
+  const { data } = await breakingBadApi.get<Character[]>("/characters");
+  return data.filter((character) => ![14, 17, 39].includes(character.char_id));
+};
 
-// const { isLoading, data: characters } = useQuery(["characters"], getCharacters);
+const { isLoading, data: characters } = useQuery(
+  ["characters"],
+  getCharacters,
+  {
+    onSuccess(data) {
+      characterStore.loadedCharacters(data);
+    },
+  }
+);
 </script>
 <template>
   <div>
