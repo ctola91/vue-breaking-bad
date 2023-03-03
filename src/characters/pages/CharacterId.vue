@@ -20,7 +20,7 @@ const getCharacterCacheFirst = async (
   return data[0];
 };
 
-const { data } = useQuery(
+const { data: character } = useQuery(
   ["characters", id],
   () => getCharacterCacheFirst(id),
   {
@@ -31,12 +31,34 @@ const { data } = useQuery(
 );
 </script>
 <template>
-  <div>
+  <h1 v-if="!character">Loading...</h1>
+  <div v-else>
     <!-- Si usamos directo el route.params.id preserva la reactividad -->
     <!-- <h1>Character {{ route.params.id }}</h1> -->
     <!-- Se pierde la reactividad, usar para componentes stateless generalmente -->
-    <h1>Character {{ id }}</h1>
-    <code>{{ data }}</code>
+
+    <h1>{{ character.name }}</h1>
+    <div class="character-container">
+      <img :src="character.img" :alt="character.name" />
+      <ul>
+        <li>Apodo: {{ character.nickname }}</li>
+        <li>Nacio: {{ character.birthday }}</li>
+        <li>Serie: {{ character.category }}</li>
+        <li>Ocupation: {{ character.occupation.join(", ") }}</li>
+        <li>ACtor: {{ character.portrayed }}</li>
+        <li>Estado: {{ character.status }}</li>
+        <li>Temporadas: {{ character.appearance.join(", ") }}</li>
+      </ul>
+    </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.character-comtainer {
+  display: flex;
+  flex-direction: row;
+}
+img {
+  width: 150px;
+  border-radius: 5px;
+}
+</style>
