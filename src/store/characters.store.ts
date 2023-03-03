@@ -10,10 +10,23 @@ interface Store {
     hasError: boolean;
     errorMessage: string | null;
   };
-
+  ids: {
+    list: {
+      [id: string]: Character;
+    };
+    isLoading: boolean;
+    hasError: boolean;
+    errorMessage: string | null;
+  };
+  // CHaracters methods
   startLoadingCharacters: () => void;
   loadedCharacters: (data: Character[]) => void;
   loadCharactersFailed: (error: string) => void;
+
+  // ids methods
+  startLoadingCharacter: (id: string) => void;
+  checkIdInStore: (id: string) => boolean;
+  loadedCharacter: (character: Character) => void;
 }
 // Initial State
 const characterStore = reactive<Store>({
@@ -24,7 +37,27 @@ const characterStore = reactive<Store>({
     isLoading: false,
     list: [],
   },
-
+  ids: {
+    list: {},
+    isLoading: false,
+    hasError: false,
+    errorMessage: null,
+  },
+  startLoadingCharacter(id: string) {
+    this.ids = {
+      ...this.ids,
+      isLoading: true,
+      hasError: false,
+      errorMessage: null,
+    };
+  },
+  checkIdInStore(id) {
+    return !!this.ids.list[id]; // this.ids.list[id] !== undefined
+  },
+  loadedCharacter(character: Character) {
+    this.ids.isLoading = false;
+    this.ids.list[character.char_id] = character;
+  },
   // Methods
   async startLoadingCharacters() {
     const { data } = await breakingBadApi.get<Character[]>("/characters");
@@ -53,8 +86,8 @@ const characterStore = reactive<Store>({
       errorMessage: error,
       hasError: true,
       isLoading: false,
-      list: []
-    }
+      list: [],
+    };
   },
 });
 
