@@ -11,11 +11,15 @@ const getCharacter = async (id: string): Promise<Character> => {
   if (characterSet.value[id]) {
     return characterSet.value[id];
   }
-  const { data } = await breakingBadApi.get<Character[]>(`/characters/${id}`);
-
-  // TODO: Add error 500
-
-  return data[0];
+  try {
+    const { data } = await breakingBadApi.get<Character[]>(`/characters/${id}`);
+    if (data.length > 0) {
+      return data[0];
+    }
+    throw new Error(`No se encontro un personaje con el id ${id}`);
+  } catch (error: any) {
+    throw new Error(error);
+  }
 };
 
 const loadedCharacter = (character: Character) => {
@@ -24,9 +28,15 @@ const loadedCharacter = (character: Character) => {
   characterSet.value[character.char_id] = character;
 };
 
+const loadedWithError = (error: string) => {
+  hasError.value = true;
+  errorMessage.value = error;
+};
+
 const useCharacter = (id: string) => {
   const { isLoading } = useQuery(["characters", id], () => getCharacter(id), {
     onSuccess: loadedCharacter,
+    onError: loadedWithError,
   });
 
   return {
@@ -34,6 +44,7 @@ const useCharacter = (id: string) => {
     list: characterSet,
     hasError,
     errorMessage,
+    isLoading,
     // Getters
     character: computed<Character | null>(() => characterSet.value[id]),
     // Methods

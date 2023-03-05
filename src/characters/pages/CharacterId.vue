@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import type { Character } from "@/characters/interfaces/character";
 
-import useCharacter from "../composables/useCharacter";
+import useCharacter from "@/characters/composables/useCharacter";
 
 const route = useRoute();
 const { id } = route.params as { id: string };
 
-const { hasError, errorMessage, character } = useCharacter(id);
+const { hasError, errorMessage, character, isLoading } = useCharacter(id);
 </script>
 <template>
-  <h1 v-if="!character">Loading...</h1>
+  <h1 v-if="isLoading">Loading...</h1>
   <h1 v-else-if="hasError">{{ errorMessage }}</h1>
-  <div v-else>
+  <div v-else-if="character">
     <!-- Si usamos directo el route.params.id preserva la reactividad -->
     <!-- <h1>Character {{ route.params.id }}</h1> -->
     <!-- Se pierde la reactividad, usar para componentes stateless generalmente -->
